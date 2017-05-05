@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.util.DigestUtils.md5DigestAsHex;
@@ -35,12 +34,17 @@ public class SecurityTest {
     }
 
     @Test
-    public void publicContentShouldBeAvailable() throws Exception {
-
-        mockMvc.perform(get("/public"))
+    public void publicContentNotAvailableWithoutApiKey() throws Exception {
+        mockMvc.perform(get("/public").header("API-KEY", "1234567890"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello!"))
-                .andDo(print());
+                .andExpect(content().string("Hello!"));
+    }
+
+    @Test
+    public void publicContentAvailableApiKey() throws Exception {
+        mockMvc.perform(get("/public"))
+                .andExpect(status().isForbidden())
+                .andExpect(status().reason("API-KEY needed"));
     }
 
     @Test
@@ -48,9 +52,7 @@ public class SecurityTest {
 
         mockMvc.perform(get("/secret"))
                 .andExpect(status().isUnauthorized())
-                .andExpect(status().reason("Full authentication is required to access this resource"))
-                .andDo(print())
-                .andReturn();
+                .andExpect(status().reason("Full authentication is required to access this resource"));
     }
 
     @Test
