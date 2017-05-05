@@ -61,9 +61,9 @@ public class Security extends WebSecurityConfigurerAdapter {
     @Bean
     DigestAuthenticationEntryPoint digestAuthenticationEntry() {
         DigestAuthenticationEntryPoint digestAuthenticationEntry = new DigestAuthenticationEntryPoint();
-        digestAuthenticationEntry.setRealmName("GAURAVBYTES.COM");
+        digestAuthenticationEntry.setRealmName("REALM");
         digestAuthenticationEntry.setKey("GRM");
-        digestAuthenticationEntry.setNonceValiditySeconds(60);
+//        digestAuthenticationEntry.setNonceValiditySeconds(60);
         return digestAuthenticationEntry;
     }
 
