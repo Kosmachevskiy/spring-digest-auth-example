@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class Controller {
 
-    @GetMapping("/")
+    @GetMapping("/secret")
     public String privateData(HttpServletRequest request) {
         return "Secret!";
     }

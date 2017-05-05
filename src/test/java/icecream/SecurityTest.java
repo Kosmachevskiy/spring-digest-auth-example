@@ -46,8 +46,8 @@ public class SecurityTest {
     @Test
     public void privateContentAccessDenied() throws Exception {
 
-        mockMvc.perform(get("/"))
-                .andExpect(status().is4xxClientError())
+        mockMvc.perform(get("/secret"))
+                .andExpect(status().isUnauthorized())
                 .andExpect(status().reason("Full authentication is required to access this resource"))
                 .andDo(print())
                 .andReturn();
@@ -59,7 +59,7 @@ public class SecurityTest {
         final String PASSWORD = "pwd";
         final String REALM = "REALM";
         final String HTTP_METHOD = "GET";
-        final String URL = "/";
+        final String URL = "/secret";
         final String nonce;
 
         // Empty request to get nonce //
@@ -81,7 +81,7 @@ public class SecurityTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", String.format(headerTemplate, USER_NAME, REALM, nonce, URL, response));
 
-        mockMvc.perform(get("/").headers(headers))
+        mockMvc.perform(get(URL).headers(headers))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Secret!"));
     }
